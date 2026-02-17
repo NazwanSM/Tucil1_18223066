@@ -2,7 +2,7 @@
 
 ## Deskripsi
 
-Program ini merupakan solver untuk puzzle Queens dari LinkedIn yang diimplementasikan menggunakan algoritma **brute force**. Program mencoba seluruh kemungkinan penempatan queen pada papan NxN dengan meng-generate semua permutasi posisi kolom, lalu memvalidasi setiap permutasi terhadap tiga constraint:
+Program ini merupakan solver untuk puzzle Queens dari LinkedIn yang diimplementasikan menggunakan algoritma **brute force**. Program mencoba seluruh kemungkinan penempatan queen pada papan NxN dengan meng-generate semua kandidat solusi, lalu memvalidasi setiap solusi terhadap tiga constraint:
 
 1. Setiap queen harus berada di region warna yang berbeda.
 2. Tidak ada dua queen yang bertetangga (termasuk diagonal).
@@ -21,7 +21,7 @@ Tucil-1-Stima/
 │   ├── input1.txt        # Test case 1
 │   ├── input2.txt        # Test case 2
 │   ├── ...
-│   └── input8.txt        # Test case 8
+│   └── input5.txt        # Test case 5
 ├── test/                 # Output solusi (txt & png)
 ├── requirements.txt
 ├── .gitignore
@@ -75,15 +75,13 @@ Jalankan file `bin/QueensLinkedinSolver.exe` secara langsung (tanpa perlu instal
 File `.txt` berisi grid NxN dengan huruf kapital sebagai penanda region. Contoh (9x9):
 
 ```
-AAABBCCCD 
-ABBBBCECD 
-ABBBDCECD 
-AAABDCCCD 
-BBBBDDDDD 
-FGGGDDHDD 
-FGIGDDHDD 
-FGIGDDHDD 
-FGGGDDHHH 
+AAAAAAA
+BBBBBBB
+BCBBDDD
+CCBBDEE
+FCBBDDD
+FCBBDGD
+CCCBDDD
 ```
 
 ### Format Output
@@ -91,24 +89,22 @@ FGGGDDHHH
 File `.txt` berisi grid dengan `#` menandakan posisi queen. File `.png` berisi visualisasi papan berwarna dengan simbol queen.
 
 ```
-AAABBCC#D
-ABBB#CECD
-ABBBDC#CD
-A#ABDCCCD
-BBBBD#DDD
-FGG#DDHDD
-#GIGDDHDD
-FG#GDDHDD
-FGGGDDHH#
+AAA#AAA
+B#BBBBB
+BCBB#DD
+CCBBDE#
+#CBBDDD
+FCBBD#D
+CC#BDDD
 ```
-![image](test/output1.png)
+![image](test/output3.png)
 ## Build Executable
 
 Untuk membuat file `.exe` menggunakan PyInstaller:
 
 ```bash
 cd src
-pyinstaller --onefile --windowed --name "QueensLinkedinSolver" --distpath "../bin" --workpath "build" --specpath "." --hidden-import customtkinter --collect-all customtkinter --add-data "input1.txt;." --add-data "input2.txt;." --add-data "input3.txt;." --add-data "input4.txt;." --add-data "input5.txt;." --add-data "input6.txt;." --add-data "input7.txt;." --add-data "input8.txt;." main.py
+pyinstaller --onefile --windowed --name "QueensLinkedinSolver" --distpath "../bin" --workpath "build" --specpath "." --hidden-import customtkinter --collect-all customtkinter --add-data "input1.txt;." --add-data "input2.txt;." --add-data "input3.txt;." --add-data "input4.txt;." --add-data "input5.txt;." main.py
 ```
 
 ## Author
