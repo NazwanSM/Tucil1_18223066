@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw, ImageFont
 import time
 import os
 import re
+import sys
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -84,6 +85,7 @@ class QueensApp(ctk.CTk):
         self.start_time = 0
         self.is_running = False
         self.input_filename = None
+        self.base_path = self.get_base_path()
         
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)    
@@ -242,9 +244,15 @@ class QueensApp(ctk.CTk):
                 
         except StopIteration:
             pass
+        
+    def get_base_path(self):
+        if getattr(sys, 'frozen', False):
+            return os.path.dirname(os.path.dirname(sys.executable))
+        else:
+            return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     def simpan_solusi(self, posisi_queens, waktu_ms):
-        test_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test")
+        test_folder = os.path.join(self.base_path, "test")
         os.makedirs(test_folder, exist_ok=True)
         
         nomor = "1" 
@@ -274,7 +282,7 @@ class QueensApp(ctk.CTk):
         if not posisi_final:
             return
 
-        test_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test")
+        test_folder = os.path.join(self.base_path, "test")
         os.makedirs(test_folder, exist_ok=True)
         
         cell_size = 100
