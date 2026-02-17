@@ -21,9 +21,10 @@ Tucil-1-Stima/
 │   ├── input1.txt        # Test case 1
 │   ├── input2.txt        # Test case 2
 │   ├── ...
-│   └── input6.txt        # Test case 6
+│   └── input8.txt        # Test case 8
 ├── test/                 # Output solusi (txt & png)
 ├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
@@ -33,6 +34,7 @@ Tucil-1-Stima/
 - Library:
   - `customtkinter`
   - `Pillow`
+  - `pyinstaller==6.3.0`
 
 ## Instalasi
 
@@ -106,7 +108,7 @@ Untuk membuat file `.exe` menggunakan PyInstaller:
 
 ```bash
 cd src
-pyinstaller --onefile --windowed --name "QueensLinkedinSolver" --distpath "../bin" --workpath "build" --specpath "." --hidden-import customtkinter --collect-all customtkinter --add-data "input1.txt;." --add-data "input2.txt;." --add-data "input3.txt;." --add-data "input4.txt;." --add-data "input5.txt;." --add-data "input6.txt;." main.py
+pyinstaller --onefile --windowed --name "QueensLinkedinSolver" --distpath "../bin" --workpath "build" --specpath "." --hidden-import customtkinter --collect-all customtkinter --add-data "input1.txt;." --add-data "input2.txt;." --add-data "input3.txt;." --add-data "input4.txt;." --add-data "input5.txt;." --add-data "input6.txt;." --add-data "input7.txt;." --add-data "input8.txt;." main.py
 ```
 
 ## Author
