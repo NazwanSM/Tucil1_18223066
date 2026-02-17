@@ -23,10 +23,21 @@ class QueensSolver:
             for permutasi in self.generate_permutasi(elemen[1:]):
                 for i in range(len(elemen)):
                     yield permutasi[:i] + [elemen[0]] + permutasi[i:]
+    
+    def generate_semua_kombinasi(self, panjang, current_posisi=[]):
+        if len(current_posisi) == panjang:
+            yield current_posisi
+        else:
+            for i in range(self.n):
+                yield from self.generate_semua_kombinasi(panjang, current_posisi + [i])
                     
     def cek_validasi(self, posisi_queens):
         self.jumlah_percobaan += 1
         warna_terpakai = []
+        
+        # Constraint Kolom
+        if len(set(posisi_queens)) != self.n:
+            return False
         
         # Constraint Warna
         for baris in range(self.n):
@@ -44,8 +55,21 @@ class QueensSolver:
                 return False
                 
         return True
-                
+    
     def cari_solusi(self):
+        generator = self.generate_semua_kombinasi(self.n)
+        
+        for kemungkinan in generator:
+            is_valid = self.cek_validasi(kemungkinan)
+            if is_valid:
+                yield kemungkinan, True, True
+                return
+            else:
+                yield kemungkinan, False, False
+                
+        yield None, False, True
+    
+    def cari_solusi_optimal(self):
         angka_kolom = list(range(self.n))
         generator = self.generate_permutasi(angka_kolom)
         
@@ -74,6 +98,7 @@ class QueensApp(ctk.CTk):
         self.is_running = False
         self.input_filename = None
         self.base_path = self.get_base_path()
+        self.previous_queens = None
         
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)    
@@ -89,8 +114,10 @@ class QueensApp(ctk.CTk):
         
         self.btn_load = ctk.CTkButton(frame_kiri, text="Pilih File .txt", command=self.load_file, font=("Roboto", 16))
         self.btn_load.pack(pady=10, padx=20)
-        self.btn_start = ctk.CTkButton(frame_kiri, text="Mulai Cari Solusi", command=self.start_solusi, state="disabled", font=("Roboto", 16))
+        self.btn_start = ctk.CTkButton(frame_kiri, text="Cari Solusi", command=self.start_solusi, state="disabled", font=("Roboto", 16))
         self.btn_start.pack(pady=10, padx=20)
+        self.btn_start_optimal = ctk.CTkButton(frame_kiri, text="Cari Solusi Optimal", command=self.start_solusi_optimal, state="disabled", font=("Roboto", 16))
+        self.btn_start_optimal.pack(pady=10, padx=20)
         self.label_status = ctk.CTkLabel(frame_kiri, text="Menunggu file", font=("Roboto", 14))
         self.label_status.pack(pady=(20, 5))
         self.label_iterasi = ctk.CTkLabel(frame_kiri, text="Iterasi: 0", font=("Roboto", 14))
@@ -123,7 +150,7 @@ class QueensApp(ctk.CTk):
         self.gambar_papan()
         self.label_status.configure(text=f"File berhasil dimuat ({self.n}x{self.n})")
         self.btn_start.configure(state="normal")
-
+        self.btn_start_optimal.configure(state="normal")
             
     def get_warna_region(self, huruf):
         warna_map = {
@@ -174,7 +201,7 @@ class QueensApp(ctk.CTk):
                 kotak = ctk.CTkButton(self.frame_kanan, text=huruf_region, fg_color=warna_bg, text_color=warna_bg, hover=False, corner_radius=0, font=("Arial", 24, "bold"), border_width=0.5, border_color="black")
                 kotak.grid(row=r, column=c, sticky="nsew")
                 self.tombol_grid[(r, c)] = kotak
-                
+    
     def start_solusi(self):
         if not self.grid_data:
             return 
@@ -185,6 +212,23 @@ class QueensApp(ctk.CTk):
         self.is_running = True
         self.start_time = time.time()
         self.btn_start.configure(state="disabled")
+        self.btn_load.configure(state="disabled")
+        self.label_status.configure(text="Mencari solusi..", text_color="#75BAFE")
+        
+        self.update_logika()
+    
+    # Solusi optimal menggunakan permutasi untuk memastikan tidak ada duplikasi kolom, sehingga lebih cepat menemukan solusi jika ada        
+    def start_solusi_optimal(self):
+        if not self.grid_data:
+            return 
+        
+        self.solver = QueensSolver(self.grid_data)
+        self.generator_solusi = self.solver.cari_solusi_optimal()
+        
+        self.is_running = True
+        self.start_time = time.time()
+        self.btn_start.configure(state="disabled")
+        self.btn_start_optimal.configure(state="disabled")
         self.btn_load.configure(state="disabled")
         self.label_status.configure(text="Mencari solusi..", text_color="#75BAFE")
         
@@ -216,6 +260,7 @@ class QueensApp(ctk.CTk):
                 self.is_running = False
                 self.btn_load.configure(state="normal")
                 self.btn_start.configure(state="normal")
+                self.btn_start_optimal.configure(state="normal")
                 
                 if found:
                     self.label_status.configure(text="Solusi ditemukan!", text_color="green")
@@ -301,12 +346,20 @@ class QueensApp(ctk.CTk):
         image.save(filepath)
     
     def visualisasi_queens(self, posisi_queens):
-        for (r, c), tombol in self.tombol_grid.items():
-            tombol.configure(text="")
+        if self.previous_queens:
+            for r, old_c in enumerate(self.previous_queens):
+                new_c = posisi_queens[r] if r < len(posisi_queens) else None
+                
+                if old_c != new_c and old_c is not None:
+                    tombol = self.tombol_grid[(r, old_c)]
+                    huruf_region = self.grid_data[r][old_c]
+                    tombol.configure(text="", text_color=self.get_warna_region(huruf_region))
         
         for r, c in enumerate(posisi_queens):
-            tombol = self.tombol_grid[(r, c)]
-            tombol.configure(text="♛", text_color="black", font=("Segoe UI Symbol", 36, "bold"))
+            if c is not None and 0 <= c < self.n:
+                tombol = self.tombol_grid[(r, c)]
+                tombol.configure(text="♛", text_color="black", font=("Segoe UI Symbol", 36, "bold"))
+        self.previous_queens = posisi_queens.copy()
             
 if __name__ == "__main__":
     app = QueensApp()
