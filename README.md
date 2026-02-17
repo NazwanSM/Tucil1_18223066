@@ -65,7 +65,7 @@ Jalankan file `bin/QueensLinkedinSolver.exe` secara langsung (tanpa perlu instal
 ## Cara Menggunakan
 
 1. Klik **Pilih File .txt** untuk memuat file input berisi grid NxN (huruf A-Z merepresentasikan region warna).
-2. Klik **Mulai Cari Solusi** untuk memulai pencarian.
+2. Klik **Cari Solusi** untuk memulai pencarian atau **Cari Solusi Optimal** untuk waktu yang lebih singkat.
 3. Program akan menampilkan proses pencarian secara real-time pada papan.
 4. Setelah solusi ditemukan, program menampilkan jumlah iterasi dan waktu eksekusi.
 5. Pilih **Ya** pada dialog simpan untuk menyimpan solusi ke folder `test/` dalam format `.txt` dan `.png`.
