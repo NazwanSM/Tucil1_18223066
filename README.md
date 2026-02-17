@@ -101,7 +101,7 @@ FGG#DDHDD
 FG#GDDHDD
 FGGGDDHH#
 ```
-
+![image](test/output1.png)
 ## Build Executable
 
 Untuk membuat file `.exe` menggunakan PyInstaller:
