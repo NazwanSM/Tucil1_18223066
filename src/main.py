@@ -38,22 +38,10 @@ class QueensSolver:
             warna_terpakai.append(warna)
         
         # Constraint Neighbor
-        for i in range(self.n):
-            for j in range(i + 1, self.n):
-                r1, c1 = i, posisi_queens[i]
-                r2, c2 = j, posisi_queens[j]
-                
-                dr = abs(r1 - r2)
-                dc = abs(c1 - c2)
-                
-                if dr <=1 and dc <= 1:
-                    return False
-                
-        # Constraint Horizantal dan Vertikal
-        for i in range(self.n):
-            for j in range(i + 1, self.n):
-                if posisi_queens[i] == posisi_queens[j]:
-                    return False
+        for i in range(self.n - 1):
+            selisih_kolom = abs(posisi_queens[i] - posisi_queens[i+1])
+            if selisih_kolom < 2:
+                return False
                 
         return True
                 
